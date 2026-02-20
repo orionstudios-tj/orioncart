@@ -1,8 +1,13 @@
 name: OrionCart CI
 
 on:
+  push:
+    branches:
+      - main
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
 
@@ -15,18 +20,23 @@ jobs:
         working-directory: client
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: npm install
-      - run: npm run build
+      - name: Install Client
+        run: npm install
+
+      - name: Build Client
+        run: npm run build
 
 
   server-check:
-    name: Install Backend
+    name: Backend Install Check
     runs-on: ubuntu-latest
 
     defaults:
@@ -34,10 +44,13 @@ jobs:
         working-directory: server
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: npm install
+      - name: Install Server
+        run: npm install

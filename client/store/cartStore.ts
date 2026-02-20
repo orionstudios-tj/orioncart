@@ -1,21 +1,41 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const useCartStore = create(
+/* ---------- Product Type ---------- */
+type Product = {
+  _id: string;
+  name: string;
+  price: number;
+  image?: string;
+  quantity: number;
+};
+
+/* ---------- Store Type ---------- */
+type CartStore = {
+  cart: Product[];
+
+  addToCart: (product: Product) => void;
+  removeFromCart: (id: string) => void;
+  increaseQty: (id: string) => void;
+  decreaseQty: (id: string) => void;
+};
+
+export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       cart: [],
 
-      addToCart: (product: any) => {
-        const existing = get().cart.find(
-          (item: any) => item._id === product._id,
-        );
+      addToCart: (product) => {
+        const existing = get().cart.find((item) => item._id === product._id);
 
         if (existing) {
           set({
-            cart: get().cart.map((item: any) =>
+            cart: get().cart.map((item) =>
               item._id === product._id
-                ? { ...item, quantity: item.quantity + 1 }
+                ? {
+                    ...item,
+                    quantity: item.quantity + 1,
+                  }
                 : item,
             ),
           });
@@ -26,14 +46,14 @@ export const useCartStore = create(
         }
       },
 
-      removeFromCart: (id: string) =>
+      removeFromCart: (id) =>
         set({
-          cart: get().cart.filter((item: any) => item._id !== id),
+          cart: get().cart.filter((item) => item._id !== id),
         }),
 
-      increaseQty: (id: string) =>
+      increaseQty: (id) =>
         set({
-          cart: get().cart.map((item: any) =>
+          cart: get().cart.map((item) =>
             item._id === id
               ? {
                   ...item,
@@ -43,10 +63,10 @@ export const useCartStore = create(
           ),
         }),
 
-      decreaseQty: (id: string) =>
+      decreaseQty: (id) =>
         set({
           cart: get()
-            .cart.map((item: any) =>
+            .cart.map((item) =>
               item._id === id
                 ? {
                     ...item,
@@ -54,7 +74,7 @@ export const useCartStore = create(
                   }
                 : item,
             )
-            .filter((item: any) => item.quantity > 0),
+            .filter((item) => item.quantity > 0),
         }),
     }),
     {

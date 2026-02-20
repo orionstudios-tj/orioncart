@@ -1,25 +1,43 @@
-name: OrionCart Turbo CI
+name: OrionCart CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  build:
+
+  client-build:
+    name: Build Frontend
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+    defaults:
+      run:
+        working-directory: client
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Root Dependencies
-        run: npm install
+      - run: npm install
+      - run: npm run build
 
-      - name: Build using Turbo
-        run: npx turbo run build --no-daemon
+
+  server-check:
+    name: Install Backend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
